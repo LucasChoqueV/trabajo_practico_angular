@@ -1,0 +1,16 @@
+.card img{
+    width: 20em;
+    height: 20em;
+}
+#teclado button{
+    width: 35px;
+    margin-left: 1px;
+}
+input:focus{
+    background: #5cb85c;
+    border: none;
+    color: #ffffff;
+}
+input:hover{
+    border: 3px solid #5cb85c;
+}

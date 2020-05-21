@@ -1,0 +1,69 @@
+<div class="row">
+  <div class="col-md-8 offset-md-2 py-5">
+    <button class="col-md-4 btn btn-danger" (click)="cambiarTematica(tematica=0)">Animales</button>
+    <button class="col-md-4 btn btn-primary" (click)="cambiarTematica(tematica=10)">Utiles</button>
+    <button class="col-md-4 btn btn-light" (click)="cambiarTematica(tematica=20)">Ropa</button>
+  </div>
+  <div class="card col-md-6 offset-3 row bg-dark text-white pt-3">
+    <button class="btn btn-success m-auto w-50 mb-3" (click)="resetearPartida(tematica)">Iniciar</button>
+    <img src="{{palabraUnica.urlImagen}}" class="card-img-top m-auto">
+    <div class="card-body">
+      <ul class="p-0 col-md-12 offset-4">
+        <li *ngFor="let letra of palabraDesifrada, index as i" class="d-inline">
+          <input type="text" tabindex="-1" style="width: 35px; height: 35px;" maxlength="1" (click)="indice=i"
+            (keyup)="guardarLetraTeclado($event)" [(ngModel)]="palabraNoDesifrada[i]">
+        </li>
+      </ul>
+      <ul class="list-group pb-5">
+        <div class="row">
+          <li class="list-group-item col-md-6 bg-dark">
+            <p class="text-center h5">Puntaje: {{puntaje}}</p>
+          </li>
+          <li class="list-group-item col-md-6 bg-dark">
+            <p class="text-center h5">Vidas: {{vida}}</p>
+          </li>
+        </div>
+      </ul>
+      <ul class="p-0 col-md-9 m-auto">
+        <li class="d-inline" *ngFor="let a of alfabeto">
+          <button class="btn btn-outline-success" style="width: 35px; height: 35px;"
+            (click)="guardarLetraBoton(a)">{{a | uppercase}}</button>
+        </li>
+      </ul>
+      <p class="py-3 text-center display-4">{{palabraUnica.palabraEspanol}}</p>
+    </div>
+  </div>
+</div>
+<table class="table container mt-5 text-center" [mfData]="listaPalabras" #mf="mfDataTable" [mfRowsOnPage]="5">
+  <thead>
+    <tr>
+      <th scope="col">
+        <mfDefaultSorter by="id">Id</mfDefaultSorter>
+      </th>
+      <th scope="col">
+        <mfDefaultSorter by="palabraIngles">Palabra en Ingles</mfDefaultSorter>
+      </th>
+      <th scope="col">
+        <mfDefaultSorter by="palabraEspanol">Palabra en Español</mfDefaultSorter>
+      </th>
+      <th scope="col">
+        <mfDefaultSorter by="urlImagen">Url Imagen</mfDefaultSorter>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let i of mf.data">
+      <th scope="row">{{i.id}}</th>
+      <td>{{i.palabraIngles}}</td>
+      <td>{{i.palabraEspanol}}</td>
+      <td><img src="{{i.urlImagen}}" height="100px" width="100px"></td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="4">
+        <mfBootstrapPaginator [rowsOnPageSet]="[5,10]"></mfBootstrapPaginator>
+      </td>
+    </tr>
+  </tfoot>
+</table>
