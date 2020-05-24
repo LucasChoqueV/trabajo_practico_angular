@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Palabra } from './../../models/palabra';
 import { PalabraService } from './../../servicios/palabra.service';
+import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-palabra',
   templateUrl: './palabra.component.html',
@@ -20,8 +21,7 @@ export class PalabraComponent implements OnInit {
   vida:number = 6;
   tematica:number=0;
 
-/*si se desea conservar la memoria de la pagina intentar hacerlo en un servicio*/
-  constructor(private servicio:PalabraService) {
+  constructor(private servicio:PalabraService, private _toa:ToastrService) {
     this.cargarAnimales();
     this.siguientePalabra();
    }
@@ -31,6 +31,7 @@ export class PalabraComponent implements OnInit {
      this.siguientePalabra();   
      this.puntaje=0;
      this.vida=6;
+     this._toa.info('Tematica cambiada','Atencion');
    }
 
    siguientePalabra(){
@@ -41,7 +42,7 @@ export class PalabraComponent implements OnInit {
      this.partidaActual ++;
      
      if(this.puntaje==10){
-      alert("Felicidades Usted a Ganado");
+      this._toa.success('Ha Ganado el juego','Felicidades');
       this.resetearPartida(this.tematica);
      }
    }
@@ -61,14 +62,17 @@ export class PalabraComponent implements OnInit {
    probarIntento(){
      if(this.letraPresionada == this.palabraDesifrada[this.indice]){
       this.palabraNoDesifrada[this.indice] = this.letraPresionada;
-      if(this.verificarPalabras())
+      if(this.verificarPalabras()){
+        this._toa.success('Ha acertado', 'Felicidades');
         this.siguientePalabra();
+      }
+        
      }
      else{
       if(this.letraPresionada != "")
         this.vida--;
         if(this.vida==0){
-          alert("Perdio :(")
+          this._toa.error('Ha perdido', 'Game Over');
           this.resetearPartida(this.tematica);
         }
      }

@@ -36,8 +36,8 @@
   </div>
 </div>
 <p class="text-center text-white display-4 mt-5">Ayuda</p>
-<table class="table container mt-5 text-center" [mfData]="listaPalabras" #mf="mfDataTable" [mfRowsOnPage]="5">
-  <thead>
+<table class="table container mt-5 text-center bg-oscuro-2" [mfData]="listaPalabras" #mf="mfDataTable" [mfRowsOnPage]="5">
+  <thead class="text-white">
     <tr>
       <th scope="col">
         <mfDefaultSorter by="id">Id</mfDefaultSorter>
@@ -49,11 +49,11 @@
         <mfDefaultSorter by="palabraEspanol">Palabra en Español</mfDefaultSorter>
       </th>
       <th scope="col">
-        <mfDefaultSorter by="urlImagen">Url Imagen</mfDefaultSorter>
+        <mfDefaultSorter by="urlImagen">Imagen</mfDefaultSorter>
       </th>
     </tr>
   </thead>
-  <tbody>
+  <tbody class="text-white">
     <tr *ngFor="let i of mf.data">
       <th scope="row">{{i.id}}</th>
       <td>{{i.palabraIngles}}</td>

@@ -12,7 +12,8 @@ import { MensajeriaComponent } from './components/mensajeria/mensajeria.componen
 import { PasajeComponent } from './components/pasaje/pasaje.component';
 import { PalabraComponent } from './components/palabra/palabra.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastrModule } from 'ngx-toastr';
 @NgModule({
   declarations: [
     AppComponent,
@@ -29,6 +30,14 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     FormsModule,
     NgxDataTableModule,
     NgbModule,
+    BrowserAnimationsModule,
+    ToastrModule.forRoot({
+      closeButton:true,
+      timeOut:2000,
+      maxOpened:1,
+      autoDismiss:true,
+      progressBar:true
+    })
   ],
   providers: [
    // {provide: LOCALE_ID, useValue:"es"}

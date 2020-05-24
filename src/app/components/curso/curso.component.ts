@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Asistente } from '../../models/asistente';
 import { AsistenteService } from './../../servicios/asistente.service';
-
+import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-curso',
   templateUrl: './curso.component.html',
@@ -14,7 +14,7 @@ export class CursoComponent implements OnInit {
   listaAsistentes:Array<any>;
   respuesta:string;
 
-  constructor(private servicio:AsistenteService) {
+  constructor(private servicio:AsistenteService, private _toa:ToastrService) {
     this.listaAsistentes = new Array<Asistente>();
     this.asistente = new Asistente();
     this.cargarAsistentes();
@@ -24,6 +24,7 @@ export class CursoComponent implements OnInit {
     this.respuesta=="True"?this.asistente.solicitaConstancia=true:this.asistente.solicitaConstancia=false;
     this.servicio.addAsistente(this.asistente);
     this.asistente = new Asistente();
+    this._toa.success('Registrado correctamente', 'Exito');
   }
 
   cargarAsistentes(){

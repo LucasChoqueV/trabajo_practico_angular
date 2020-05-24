@@ -1,18 +1,9 @@
-@font-face{
-    font-family: "Roboto Bold";
-    src: url("../font/Roboto-Bold.ttf");
-    font-family: "Roboto";
-    src: url("../font/Roboto-Thin.ttf");
+.bg-oscuro-1{
+    background: rgb(30, 30, 30);
 }
-.my-text{
-    font-family: "Roboto";
-    font-size:160% ;
+.bg-oscuro-2{
+    background: rgb(45, 45, 45);
 }
-.my-text-2{
-    font-family: "Roboto";
-    font-size:110% ;
-}
-.titulo{
-    font-family: "Roboto";
-    font-size:200% ;
+.border-radius{
+    border-radius: 10px;
 }
