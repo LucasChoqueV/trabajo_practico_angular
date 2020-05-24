@@ -1,54 +1,81 @@
 <div class="container">
     <div class="row">
-        <form class="card col-md-6 offset-md-3 mt-5 bg-dark text-white">
-            <div class="py-4"> <p class=" d-inline py-3 px-4 h3">Envio de Mensajes</p> </div>
+        <form class="card col-md-8 offset-md-2 mt-5 bg-dark text-white" #mensajeForm="ngForm">
+            <div class="py-4">
+                <p class=" d-inline py-3 px-4 h3">Envio de Mensajes</p>
+            </div>
             <div class="card-body h4">
                 <div class="form-row form-group">
                     <label class="col-sm-12 col-md-3">Para</label>
-                    <input class="form-control col-sm-12 col-md-9" type="number" name="txtdesde" [(ngModel)]="mensaje.para"/>
+                    <input class="form-control col-sm-12 col-md-9" type="number" name="txtdesde"
+                        [(ngModel)]="mensaje.para" required #pa="ngModel" />
+                </div>
+
+                <!-- Validacion -->
+                <div *ngIf="pa.invalid && (pa.dirty || pa.touched)"
+                    class="alert alert-danger">
+                    <div *ngIf="pa.errors.required">
+                        <small>*Campo Obligatorio</small>
+                    </div>
                 </div>
                 <div class="form-row form-group">
                     <label class="col-sm-12 col-md-3">Desde</label>
-                    <input class="form-control col-sm-12 col-md-9" type="number" name="txthasta" [(ngModel)]="mensaje.de"/>
+                    <input class="form-control col-sm-12 col-md-9" type="number" name="txthasta"
+                        [(ngModel)]="mensaje.de" required #desde="ngModel" />
+                </div>
+
+                <!-- Validacion -->
+                <div *ngIf="desde.invalid && (desde.dirty || desde.touched)"
+                    class="alert alert-danger">
+                    <div *ngIf="desde.errors.required">
+                        <small>*Campo Obligatorio</small>
+                    </div>
                 </div>
                 <div class="form-row form-group">
                     <label class="col-sm-12 col-md-4">Tu mensaje</label>
                     <label class="col-sm-12 col-md-8 text-right h5">( {{tamanioActual}} caracteres restantes)</label>
                 </div>
-                
                 <div class="form-row form-group">
-                    <textarea id="mensaje" class="form-control" [maxlength]="tamanioMaximo" rows="5" name="mensaje" [(ngModel)]="mensaje.mensaje" (ngModelChange)="cambiarTamanio()">
+                    <textarea id="mensaje" class="form-control" [maxlength]="tamanioMaximo" rows="5" name="mensaje" [(ngModel)]="mensaje.mensaje" (ngModelChange)="cambiarTamanio()" required #msj="ngModel"> 
                     </textarea>
                 </div>
+
+                <!-- Validacion -->
+                <div *ngIf="msj.invalid && (msj.dirty || msj.touched)"
+                    class="alert alert-danger">
+                    <div *ngIf="msj.errors.required">
+                        <small>*Campo Obligatorio</small>
+                    </div>
+                </div>
                 <div class="form-row form-group">
-                    <button type="button" class="btn  btn-lg w-25 btn-danger mr-auto" (click)="limpiarMensaje()">Limpiar</button>
-                    <button type="button" class="btn  btn-lg w-25 btn-success" (click)="enviarMensaje()">Enviar</button>
+                    <button type="button" class="btn  btn-lg w-25 btn-danger mr-auto" (click)="limpiarMensaje()"><i class="fas fa-trash-alt"></i> Limpiar</button>
+                    <button type="button" class="btn  btn-lg w-25 btn-success" (click)="enviarMensaje()" [disabled]="!mensajeForm.form.valid"><i class="fas fa-sms"></i> Enviar</button>
                 </div>
             </div>
         </form>
         <div class="col-md-12 mt-5">
             <p class="text-center display-4 text-white">Tabla de usuarios registrados</p>
-        <table class="table table-striped table-dark text-centerz">
-            <thead>
-                <tr>
-                    <th>Id</th>
-                    <th>Desde</th>
-                    <th>Para</th>
-                    <th>Texto</th>
-                    <th>Fecha</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let item of mensajes">
-                    <td>{{item.idMensaje}}</td>
-                    <td>{{item.de}}</td>
-                    <td>{{item.para}}</td>
-                    <td>{{item.mensaje}}</td>
-                    <td>{{item.fecha | date: 'dd/MM/yyyy'}}</td>
-                </tr>
-            </tbody>
-        </table>
+            <table class="table table-striped table-dark text-centerz">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Desde</th>
+                        <th>Para</th>
+                        <th>Texto</th>
+                        <th>Fecha</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of mensajes">
+                        <td>{{item.idMensaje}}</td>
+                        <td>{{item.de}}</td>
+                        <td>{{item.para}}</td>
+                        <td>{{item.mensaje}}</td>
+                        <td>{{item.fecha | date: 'dd/MM/yyyy'}}</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

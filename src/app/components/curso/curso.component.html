@@ -1,27 +1,46 @@
 <div class="container">
   <div class="row mt-5">
-    <form class="col-md-4 offset-4 px-5 bg-dark text-white">
-      <p class="display-4 py-2"> Registro </p>
+    <form class="col-md-6 offset-3 px-5 bg-dark text-white" #cursoForm="ngForm">
+      <p class="display-4 py-2"> Registro de curso</p>
       <div class="form-group form-row">
         <label for="mail" class="col-md-12">E-Mail</label>
         <input id="mail" class="form-control col-md-12" type="email" [(ngModel)]="asistente.usuario"
-          name="mail"/>
+          name="mail" required #mail="ngModel"/>
       </div>
+      <!-- Validacion -->
+      <div *ngIf="mail.invalid && (mail.dirty || mail.touched)" class="alert alert-danger">
+        <div *ngIf="mail.errors.required">
+          E-Mail es requerido.
+        </div>
+      </div>
+
       <div class="form-group form-row">
         <label for="organizacion" class="col-md-12">Organizacion</label>
         <input id="organizacion" class="form-control col-md-12" type="text" [(ngModel)]="asistente.nombreOrganizacion"
-          name="organizacion" />
+          name="organizacion" required #organizacion="ngModel"/>
       </div>
+      <!-- Validacion -->
+      <div *ngIf="organizacion.invalid && (organizacion.dirty || organizacion.touched)" class="alert alert-danger">
+        <div *ngIf="organizacion.errors.required">
+          Organizacion es requerida.
+        </div>
+      </div>
+
       <div class="form-group form-row ">
         <label class=" col-md-12" for="respuesta">¿Constancia?</label>
-        <select name="respuesta" id="respuesta" class="form-control col-md-12" [(ngModel)]="respuesta">
+        <select name="respuesta" id="respuesta" class="form-control col-md-12" [(ngModel)]="respuesta" required #rta="ngModel" >
           <option value="True">Si</option>
           <option value="False">No</option>
         </select>
       </div>
+
+      <!-- Validacion -->
+      <div [hidden]="rta.valid || rta.pristine" class="alert alert-danger">
+        Constancia es requerida.
+      </div>
+
       <div class="form-group form-row text-center">
-        <button type="submit" class="btn btn-success btn-lg ml-2 mr-2 w-100" (click)="registrarAsistente()"><i class="fas fa-save fal"></i>Registrar
-        </button>
+        <button type="submit" class="btn btn-success btn-lg ml-2 mr-2 w-100" (click)="registrarAsistente()" [disabled]="!cursoForm.form.valid" ><i class="fas fa-save"></i> Registrar</button>
       </div>
     </form>
     <div class="col-md-12 mt-5">

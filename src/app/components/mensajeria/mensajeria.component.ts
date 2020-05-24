@@ -59,19 +59,12 @@ export class MensajeriaComponent implements OnInit {
   }
 
   enviarMensaje(){
-    if(this.validar()){
-      this.mensaje.fecha = new Date();
-      this.servicio.add(this.mensaje);
-      this.open();
-      this.mensaje = new Mensaje();
-      this.cargarMensajes();
-      this.tamanioActual = 120;
-    }
-    else{
-      this.mensaje = new Mensaje();
-      alert("Campos incompletos");
-    }
-      
+    this.mensaje.fecha = new Date();
+    this.servicio.add(this.mensaje);
+    this.open();
+    this.mensaje = new Mensaje();
+    this.cargarMensajes();
+    this.tamanioActual = 120;
   }
 
   cargarMensajes(){
@@ -89,15 +82,6 @@ export class MensajeriaComponent implements OnInit {
     this.tamanioActual = this.tamanioMaximo;
   }
 
-  validar(){
-    if(this.mensaje.mensaje!=null && this.mensaje.para!=null && this.mensaje.de!=null)
-      return true
-    else
-      return false
-  }
-
-  
   ngOnInit(): void {
   }
-
 }

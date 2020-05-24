@@ -21,32 +21,19 @@ export class CursoComponent implements OnInit {
   }
 
   registrarAsistente(){
-    if(this.validar()){
-      this.respuesta=="True"?this.asistente.solicitaConstancia=true:this.asistente.solicitaConstancia=false;
-      this.servicio.addAsistente(this.asistente);
-      this.asistente = new Asistente();
-    }else{
-      alert("Faltan campos");
-    }
+    this.respuesta=="True"?this.asistente.solicitaConstancia=true:this.asistente.solicitaConstancia=false;
+    this.servicio.addAsistente(this.asistente);
+    this.asistente = new Asistente();
   }
 
   cargarAsistentes(){
     this.listaAsistentes = this.servicio.getAsistentes();
   }
 
-  validar(){
-    if(this.asistente.usuario != null && this.asistente.nombreOrganizacion != null && this.respuesta != null)
-      return true;
-    else
-      return false;
-  }
   ngOnInit(): void {
   }
 
   guardarRegistro(){
     this.registrarAsistente();
   }
-
 }
-
-

@@ -1,81 +1,111 @@
-<form class="container mt-5 col-md-6 offset-3 bg-dark p-5 text-white">
-    <div class="form-row">
-      <p class="display-4">Registro de pasaje</p>
-      <div class="form-group col-md-12">
-        <label for="precio">Precio de pasaje</label>
-        <input type="number" class="form-control" id="precio" name="precio" aria-describedby="precioHelp"  [(ngModel)]="pasaje.precioPasaje" (change)="calcular()">
-        <small id="precioHelp" class="form-text text-muted">Ingrese valor del pasaje</small>
-      </div>
-      <div class="form-group col-md-12" *ngIf="mostrar">
-        <label for="precioTotal">Precio total con descuento de {{descuento}}</label>
-        <input type="text" class="form-control" id="precioTotal" name="precioTotal" disabled [(ngModel)]="pasaje.precioPasajeDescuento" >
-        
-      </div>
-      <div class="form-group col-md-6">
-        <label for="dni">DNI Pasajero</label>
-        <input type="number" class="form-control" id="dni" name="dni" aria-describedby="dniHelp" [(ngModel)]="pasaje.dniPasajero">
-        <small id="dniHelp" class="form-text text-muted">Ingrese DNI del pasajero</small>
-      </div>
-      
-      <div class="form-group col-md-6">
-        <label for="calendario">Categoria</label>
-        <select id="calendario" name="calendario" class="form-control" aria-describedby="categoriaHelp" [(ngModel)]="pasaje.categoriaPasajero" (change)="calcular()">
-          <option value="A">A</option>
-          <option value="M">M</option>
-          <option value="J">J</option>
-        </select>
-        <small id="categoriaHelp" class="form-text text-muted">Ingrese la categoria del pasajero</small>
-      </div>
+<form class="container mt-5 col-md-6 offset-3 bg-dark p-5 text-white" #pasajeForm="ngForm">
+  <div class="form-row">
+    <p class="display-4">Registro de pasaje</p>
+    <div class="form-group col-md-12">
+      <label for="precio">Precio de pasaje</label>
+      <input type="number" class="form-control" id="precio" name="precio" aria-describedby="precioHelp"
+        [(ngModel)]="pasaje.precioPasaje" (change)="calcular()" required #precioV="ngModel">
+      <small id="precioHelp" class="form-text text-muted">Ingrese valor del pasaje</small>
     </div>
-    
-    <div class="form-group">
-      <label for="fechaCompra">Fecha del Pasaje</label>
-      <input type="date" class="form-control" id="fechaCompra" name="fechaCompra" [(ngModel)]="pasaje.fechaPasaje">
-    </div>
-    
-    <button type="submit" class="btn btn-success" (click)="registrar()">Registrar</button>
-  </form>
 
-  <table class="table table-dark container mt-5 text-center" [mfData]="listaPasajes" #mf="mfDataTable" [mfRowsOnPage]="5">
-    <thead>
-      <tr>
-        <th scope="col">
-          <mfDefaultSorter by="id">Id</mfDefaultSorter>
-        </th>
-        <th scope="col">
-          <mfDefaultSorter by="dniPasajero">DNI Pasajero</mfDefaultSorter>
-        </th>
-        <th scope="col">
-          <mfDefaultSorter by="precioPasaje">Precio sin descuento</mfDefaultSorter>
-        </th>
-        <th scope="col">
-          <mfDefaultSorter by="precioPasajeDescuento">Precio con descuento</mfDefaultSorter>
-        </th>
-        <th scope="col">
-          <mfDefaultSorter by="categoriaPasajero">Categoria del pasajero</mfDefaultSorter>
-        </th>
-        <th scope="col">
-          <mfDefaultSorter by="fechaCompra">Fecha de compra</mfDefaultSorter>
-        </th>
-        <th scope="col">
-          <mfDefaultSorter by="fechaPasaje">Fecha del pasaje</mfDefaultSorter>
-        </th>
-        <th scope="col" colspan="2">
-          Acciones
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let p of mf.data">
-        <th scope="row">{{p.id}}</th>
-        <td>{{p.dniPasajero}}</td>
-        <td>{{p.precioPasaje | currency:'USD':true:'1.1-2'}}</td>
-        <td>{{p.precioPasajeDescuento | currency:'USD':true:'1.1-2'}}</td>
-        <td>{{p.categoriaPasajero}}</td>
-        <td>{{p.fechaCompra | date: 'dd/MM/yyyy'}}</td>
-        <td>{{p.fechaPasaje | date: 'dd/MM/yyyy'}}</td>
-        <td><button class="btn btn-danger" (click)="eliminarPasaje(p)">Eliminar</button></td>
-        <td><button class="btn btn-info" (click)="modificarPasaje(p)">Modificar</button></td>
-      </tr>
-    </tbody>
-  </table>
+    <!-- Validacion -->
+    <div *ngIf="precioV.invalid && (precioV.dirty || precioV.touched)" class="alert alert-danger col-md-12">
+      <div *ngIf="precioV.errors.required">
+        <small>*Precio Obligatorio</small>
+      </div>
+    </div>
+
+    <div class="form-group col-md-12" *ngIf="mostrar">
+      <label for="precioTotal">Precio total con descuento de {{descuento}}</label>
+      <input type="text" class="form-control" id="precioTotal" name="precioTotal" disabled
+        [(ngModel)]="pasaje.precioPasajeDescuento">
+
+    </div>
+    <div class="form-group col-md-6">
+      <label for="dni">DNI Pasajero</label>
+      <input type="number" class="form-control" id="dni" name="dni" aria-describedby="dniHelp"
+        [(ngModel)]="pasaje.dniPasajero" required #dniV="ngModel">
+      <small id="dniHelp" class="form-text text-muted">Ingrese DNI del pasajero</small>
+    </div>
+
+    <div class="form-group col-md-6">
+      <label for="calendario">Categoria</label>
+      <select id="calendario" name="calendario" class="form-control" aria-describedby="categoriaHelp"
+        [(ngModel)]="pasaje.categoriaPasajero" (change)="calcular()" required #categoriaV="ngModel">
+        <option value="A">A</option>
+        <option value="M">M</option>
+        <option value="J">J</option>
+      </select>
+      <small id="categoriaHelp" class="form-text text-muted">Ingrese la categoria del pasajero</small>
+    </div>
+
+     <!-- Validacion -->
+     <div *ngIf="dniV.invalid && (dniV.dirty || dniV.touched)" class="alert alert-danger col-md-6">
+      <div *ngIf="dniV.errors.required">
+        <small>*DNI Obligatorio</small>
+      </div>
+    </div>
+
+    <!-- Validacion -->
+    <div [hidden]="categoriaV.valid || categoriaV.pristine" class="alert alert-danger col-md-6">
+      *Categoria Obligatorio.
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="fechaCompra">Fecha del Pasaje</label>
+    <input type="date" class="form-control" id="fechaCompra" name="fechaCompra" [(ngModel)]="pasaje.fechaPasaje" required #fechaV="ngModel">
+  </div>
+
+  <!-- Validacion -->
+  <div *ngIf="fechaV.invalid && (fechaV.dirty || fechaV.touched)" class="alert alert-danger">
+    <div *ngIf="fechaV.errors.required">
+      <small>*Fecha Obligatoria</small>
+    </div>
+  </div>
+  <button type="submit" class="btn btn-success" (click)="registrar()" [disabled]="!pasajeForm.form.valid"><i class="fas fa-save"></i>  Registrar pasaje</button>
+</form>
+
+<table class="table table-dark container mt-5 text-center" [mfData]="listaPasajes" #mf="mfDataTable" [mfRowsOnPage]="5">
+  <thead>
+    <tr>
+      <th scope="col">
+        <mfDefaultSorter by="id">Id</mfDefaultSorter>
+      </th>
+      <th scope="col">
+        <mfDefaultSorter by="dniPasajero">DNI Pasajero</mfDefaultSorter>
+      </th>
+      <th scope="col">
+        <mfDefaultSorter by="precioPasaje">Precio sin descuento</mfDefaultSorter>
+      </th>
+      <th scope="col">
+        <mfDefaultSorter by="precioPasajeDescuento">Precio con descuento</mfDefaultSorter>
+      </th>
+      <th scope="col">
+        <mfDefaultSorter by="categoriaPasajero">Categoria del pasajero</mfDefaultSorter>
+      </th>
+      <th scope="col">
+        <mfDefaultSorter by="fechaCompra">Fecha de compra</mfDefaultSorter>
+      </th>
+      <th scope="col">
+        <mfDefaultSorter by="fechaPasaje">Fecha del pasaje</mfDefaultSorter>
+      </th>
+      <th scope="col" colspan="2">
+        Acciones
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let p of mf.data">
+      <th scope="row">{{p.id}}</th>
+      <td>{{p.dniPasajero}}</td>
+      <td>{{p.precioPasaje | currency:'USD':true:'1.1-2'}}</td>
+      <td>{{p.precioPasajeDescuento | currency:'USD':true:'1.1-2'}}</td>
+      <td>{{p.categoriaPasajero}}</td>
+      <td>{{p.fechaCompra | date: 'dd/MM/yyyy'}}</td>
+      <td>{{p.fechaPasaje | date: 'dd/MM/yyyy'}}</td>
+      <td><button class="btn btn-danger" (click)="eliminarPasaje(p)">Eliminar</button></td>
+      <td><button class="btn btn-info" (click)="modificarPasaje(p)">Modificar</button></td>
+    </tr>
+  </tbody>
+</table>
