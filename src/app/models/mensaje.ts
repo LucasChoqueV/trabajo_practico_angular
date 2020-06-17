@@ -1,13 +1,15 @@
+import { Empresa } from './empresa';
 export class Mensaje {
 
-    idMensaje:number;
+    _id:number;
     para:number;
     de:number;
     mensaje:string;
     fecha:Date;
+    empresa:Empresa;
     
-    constructor(id?:number, para?:number,de?:number,mensaje?:string,fecha?:Date){
-        this.idMensaje = id;
+    constructor(_id?:number, para?:number,de?:number,mensaje?:string,fecha?:Date){
+        this._id = _id;
         this.para = para;
         this.de = de;
         this.mensaje = mensaje;

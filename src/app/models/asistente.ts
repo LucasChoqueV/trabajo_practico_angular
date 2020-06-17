@@ -1,13 +1,14 @@
 export class Asistente {
 
-    id:number;
+    _id:number;
     usuario:string;
-    nombreOrganizacion:string;
-    solicitaConstancia:boolean;
+    organizacion:string;
+    constancia:boolean;
 
-    constructor(usuario?:string,nombreOrganizacion?:string,solicitaConstancia?:boolean){
+    constructor(_id?:number,usuario?:string,organizacion?:string,constancia?:boolean){
+        this._id = _id;
         this.usuario=usuario;
-        this.nombreOrganizacion=nombreOrganizacion;
-        this.solicitaConstancia=solicitaConstancia;
+        this.organizacion=organizacion;
+        this.constancia=constancia;
     }
 }

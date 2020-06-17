@@ -16,7 +16,7 @@
 
       <div class="form-group form-row">
         <label for="organizacion" class="col-md-12">Organizacion</label>
-        <input id="organizacion" class="form-control col-md-12" type="text" [(ngModel)]="asistente.nombreOrganizacion"
+        <input id="organizacion" class="form-control col-md-12" type="text" [(ngModel)]="asistente.organizacion"
           name="organizacion" required #organizacion="ngModel"/>
       </div>
       <!-- Validacion -->
@@ -39,8 +39,11 @@
         Constancia es requerida.
       </div>
 
-      <div class="form-group form-row text-center">
-        <button type="submit" class="btn btn-success btn-lg ml-2 mr-2 w-100" (click)="registrarAsistente()" [disabled]="!cursoForm.form.valid" ><i class="fas fa-save"></i> Registrar</button>
+      <div *ngIf="!show" class="form-group form-row text-center">
+        <button type="submit" class="btn btn-success btn-lg ml-2 mr-2 w-100" (click)="addAsistente()" [disabled]="!cursoForm.form.valid" ><i class="fas fa-save"></i> Registrar</button>
+      </div>
+      <div *ngIf="show" class="form-group form-row text-center">
+        <button type="submit" class="btn btn-success btn-lg ml-2 mr-2 w-100" (click)="updateAsistente()" [disabled]="!cursoForm.form.valid" ><i class="fas fa-save"></i> Modificar</button>
       </div>
     </form>
     <div class="col-md-12 mt-5">
@@ -48,18 +51,19 @@
       <table class="table text-center bg-oscuro-2 text-white">
         <thead>
           <tr>
-            <th scope="col">Id Usuario</th>
             <th scope="col">E-Mail</th>
             <th scope="col">Organizacion</th>
             <th scope="col">¿Recibe Constancia?</th>
+            <th colspan="2" scope="col">Acciones</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let a of listaAsistentes">
-            <th scope="row">{{a.id}}</th>
             <td>{{a.usuario}}</td>
-            <td>{{a.nombreOrganizacion | uppercase}} </td>
-            <td>{{a.solicitaConstancia && 'Si' || 'No'}}</td>
+            <td>{{a.organizacion | uppercase}} </td>
+            <td>{{a.constancia && 'Si' || 'No'}}</td>
+            <td><button class="btn btn-outline-primary" (click)="cargarModificacion(a)">Modificar</button></td>
+            <td><button class="btn btn-outline-danger" (click)="deleteAsistente(a)">Borrar</button></td>
           </tr>
         </tbody>
       </table>

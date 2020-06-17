@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { LOCALE_ID } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
 import { NgxDataTableModule} from "angular-9-datatable";
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -30,6 +30,7 @@ import { ToastrModule } from 'ngx-toastr';
     FormsModule,
     NgxDataTableModule,
     NgbModule,
+    HttpClientModule,
     BrowserAnimationsModule,
     ToastrModule.forRoot({
       closeButton:true,
@@ -39,9 +40,7 @@ import { ToastrModule } from 'ngx-toastr';
       progressBar:true
     })
   ],
-  providers: [
-   // {provide: LOCALE_ID, useValue:"es"}
-  ],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,33 +1,43 @@
 import { Injectable } from '@angular/core';
 import { Asistente } from './../models/asistente';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
 export class AsistenteService {
 
-  listaAsistente:Array<any>
-  constructor() {
-    this.listaAsistente = new Array<Asistente>();
-    this.listaAsistente = [
-      {
-        id:1,
-        usuario:"Usuario 1",
-        nombreOrganizacion:"Organizacion 1",
-        solicitaConstancia:true,
-      }
-    ]
+  urlBase:string="http://localhost:3000/api/asistentes/";
+
+  constructor(private _http:HttpClient) {
   }
 
-  addAsistente(asistente:Asistente){
-    asistente.id = this.generarID();
-    this.listaAsistente.push(asistente);
+  addAsistente(asistente:Asistente):Observable<any>{
+    const httpOptions = {
+      headers: new HttpHeaders({
+        "Content-Type":"application/json"
+      })
+    }
+    var body = JSON.stringify(asistente);
+    return this._http.post(this.urlBase,body,httpOptions);
   }
 
-  getAsistentes(){
-    return this.listaAsistente;
+  deleteAsistente(asistente:Asistente):Observable<any>{
+    return this._http.delete(this.urlBase+asistente._id);
   }
 
-  generarID(){
-    return (this.listaAsistente[this.listaAsistente.length-1].id)+1;
+  updateAsistente(asistente:Asistente):Observable<any>{
+    const httpOptions = {
+      headers: new HttpHeaders({
+        "Content-Type":"application/json"
+      })
+    }
+    var body = JSON.stringify(asistente);
+    return this._http.put(this.urlBase+asistente._id,body,httpOptions);
   }
+
+  getAsistentes():Observable<any>{
+    return this._http.get(this.urlBase);
+  }
+
 }

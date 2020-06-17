@@ -1,48 +1,41 @@
 import { Injectable } from '@angular/core';
 import { Pasaje } from './../models/pasaje';
 import { ThrowStmt } from '@angular/compiler';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
 export class PasajeService {
 
-  listaPasajes:Array<any>;
-  constructor() { 
-    this.listaPasajes = new Array<Pasaje>();
-    this.listaPasajes = [
-      {
-        id:1,
-        dniPasajero:1111111,
-        precioPasaje:50000,
-        precioPasajeDescuento:50000,
-        categoriaPasajero:"A",
-        fechaCompra: new Date(),
-        fechaPasaje: new Date(),
-      }
-    ]
+  urlBase:string = "http://localhost:3000/api/pasajes/";
+  
+  constructor(private _http:HttpClient) {
   }
 
-  addPasaje(pasaje:Pasaje){
-    pasaje.id = this.generarID(pasaje);
-    this.listaPasajes.push(pasaje);
-  }
-
-  updatePasaje(pasaje:Pasaje){
-    for(var i=0;i<this.listaPasajes.length;i++){
-      if(pasaje.id == this.listaPasajes[i].id){
-        this.listaPasajes[i]=pasaje;
-      }
+  addPasaje(pasaje:Pasaje):Observable<any>{
+    const httpOptions = {
+      headers: new HttpHeaders({
+        "Content-Type":"application/json"
+      })
     }
-  }
-  deletePasaje(id:number){
-    var idBorrar = this.listaPasajes.findIndex((pasajeAux: Pasaje) => pasajeAux.id == id);
-    this.listaPasajes.splice(idBorrar,1);
-  }
-  getPasajes(){
-    return this.listaPasajes;
+    var body = JSON.stringify(pasaje);
+    return this._http.post(this.urlBase, body, httpOptions);
   }
 
-  generarID(pasaje:Pasaje){
-    return (this.listaPasajes[this.listaPasajes.length-1].id)+1;
+  updatePasaje(pasaje:Pasaje):Observable<any>{
+    const httpOptions = {
+      headers: new HttpHeaders({
+        "Content-Type":"application/json"
+      })
+    }
+    var body = JSON.stringify(pasaje);
+    return this._http.put(this.urlBase+pasaje._id, body, httpOptions);
+  }
+  deletePasaje(pasaje:Pasaje):Observable<any>{
+    return this._http.delete(this.urlBase+pasaje._id);
+  }
+  getPasajes():Observable<any>{
+    return this._http.get(this.urlBase);
   }
 }

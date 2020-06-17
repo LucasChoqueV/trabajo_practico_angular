@@ -2,6 +2,8 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Mensaje } from './../../models/mensaje';
 import { MensajeService } from './../../servicios/mensaje.service';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Empresa } from 'src/app/models/empresa';
+import { EmpresaService } from './../../servicios/empresa.service';
 
 @Component({
   selector: 'ngbd-modal-content',
@@ -40,16 +42,20 @@ export class NgbdModalContent {
 })
 export class MensajeriaComponent implements OnInit {
 
-  mensajes:Array<any>;
+  listMensajes:Array<Mensaje>;
+  listEmpresas:Array<Empresa>;
   mensaje:Mensaje;
   tamanioMaximo = 120;
   tamanioActual= 120;
 
-  constructor(private servicio:MensajeService, private modalService: NgbModal) {
-    this.mensajes = new Array<Mensaje>();
+  constructor(private servicio:MensajeService, private servicioEmpresa:EmpresaService, private modalService: NgbModal) {
+    this.listMensajes = new Array<Mensaje>();
+    this.listEmpresas = new Array<Empresa>();
     this.mensaje = new Mensaje();
-    this.cargarMensajes();
+    this.getMensajes();
+    this.getEmpresas();
   }
+
   
   open() {
     const modalRef = this.modalService.open(NgbdModalContent);
@@ -58,18 +64,49 @@ export class MensajeriaComponent implements OnInit {
     modalRef.componentInstance.mensaje =this.mensaje.mensaje;
   }
 
+  getMensajes(){
+    this.listMensajes = new Array<Mensaje>();
+    this.servicio.getMensajes().subscribe(
+      (result) => {
+        console.log(result);
+        result.forEach(element => {
+          Object.assign(this.mensaje,element);
+          this.listMensajes.push(this.mensaje);
+          this.mensaje = new Mensaje();
+        });
+      },
+      (error) => {
+        console.log(error);
+      }
+    )
+  }
+
+  getEmpresas(){
+    this.servicioEmpresa.getEmpresas().subscribe(
+      (result) => {
+        this.listEmpresas = result;
+      },
+      (error) => {
+        console.log(error);
+      }
+    )
+  }
   enviarMensaje(){
     this.mensaje.fecha = new Date();
-    this.servicio.add(this.mensaje);
+    this.servicio.addMensaje(this.mensaje).subscribe(
+      (result) => {
+        console.log(result);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
     this.open();
     this.mensaje = new Mensaje();
-    this.cargarMensajes();
+    this.getMensajes();
     this.tamanioActual = 120;
   }
 
-  cargarMensajes(){
-    this.mensajes = this.servicio.getMensajes();
-  }
 
   cambiarTamanio(){
     this.tamanioActual = this.tamanioMaximo - this.mensaje.mensaje.length;

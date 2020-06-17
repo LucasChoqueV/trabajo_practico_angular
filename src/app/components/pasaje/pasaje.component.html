@@ -1,111 +1,201 @@
-<form class="container mt-5 col-md-6 offset-3 p-5 text-white bg-oscuro-2 border-radius" #pasajeForm="ngForm">
-  <div class="form-row">
-    <p class="display-4">Registro de pasaje</p>
-    <div class="form-group col-md-12">
-      <label for="precio">Precio de pasaje</label>
-      <input type="number" class="form-control" id="precio" name="precio" aria-describedby="precioHelp"
-        [(ngModel)]="pasaje.precioPasaje" (change)="calcular()" required #precioV="ngModel">
-      <small id="precioHelp" class="form-text text-muted">Ingrese valor del pasaje</small>
+<div class="container">
+  <div class="row">
+    <!-------------------------------------------------------------AGREGAR Y MODIFICAR------------------------------------------------------->
+    <div *ngIf="!showTables" class="mt-5 col-md-8 offset-2 p-5 text-white bg-oscuro-2 border-radius">
+      <form #pasajeForm="ngForm">
+        <div class="form-row">
+          <p class="display-4">Registro de pasaje</p>
+          <div class="form-group col-md-12">
+            <label for="precio">Precio de pasaje</label>
+            <input type="number" class="form-control" id="precio" name="precio" aria-describedby="precioHelp"
+              [(ngModel)]="pasaje.precioPasaje" (change)="calcular()" required #precioV="ngModel" [disabled]="desactivarModificar" >
+            <small id="precioHelp" class="form-text text-muted">Ingrese valor del pasaje</small>
+          </div>
+
+          <!-- Validacion -->
+          <div *ngIf="precioV.invalid && (precioV.dirty || precioV.touched)" class="alert alert-danger col-md-12">
+            <div *ngIf="precioV.errors.required">
+              <small>*Precio Obligatorio</small>
+            </div>
+          </div>
+
+          <div class="form-group col-md-12" *ngIf="showDescuento">
+            <label for="precioTotal">Precio total con descuento de {{descuento}}</label>
+            <input type="text" class="form-control" id="precioTotal" name="precioTotal" disabled [(ngModel)]="pasaje.precioPasajeDescuento">
+
+          </div>
+          <div class="form-group col-md-6">
+            <label for="dni">DNI Pasajero</label>
+            <input type="number" class="form-control" id="dni" name="dni" aria-describedby="dniHelp"
+              [(ngModel)]="pasaje.dniPasajero" required #dniV="ngModel">
+            <small id="dniHelp" class="form-text text-muted">Ingrese DNI del pasajero</small>
+          </div>
+
+          <div class="form-group col-md-6">
+            <label for="calendario">Categoria</label>
+            <select id="calendario" name="calendario" class="form-control" aria-describedby="categoriaHelp"
+              [(ngModel)]="pasaje.categoriaPasajero" (change)="calcular()" required #categoriaV="ngModel" [disabled]="desactivarModificar">
+              <option value="A">Adulto</option>
+              <option value="M">Menor</option>
+              <option value="J">Jubilado</option>
+            </select>
+            <small id="categoriaHelp" class="form-text text-muted">Ingrese la categoria del pasajero</small>
+          </div>
+
+          <!-- Validacion -->
+          <div *ngIf="dniV.invalid && (dniV.dirty || dniV.touched)" class="alert alert-danger col-md-6">
+            <div *ngIf="dniV.errors.required">
+              <small>*DNI Obligatorio</small>
+            </div>
+          </div>
+
+          <!-- Validacion -->
+          <div [hidden]="categoriaV.valid || categoriaV.pristine" class="alert alert-danger col-md-6">
+            *Categoria Obligatorio.
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="fechaCompra">Fecha del Pasaje</label>
+          <input type="date" class="form-control" id="fechaCompra" name="fechaCompra" [(ngModel)]="pasaje.fechaPasaje"
+            required #fechaV="ngModel">
+        </div>
+
+        <!-- Validacion -->
+        <div *ngIf="fechaV.invalid && (fechaV.dirty || fechaV.touched)" class="alert alert-danger">
+          <div *ngIf="fechaV.errors.required">
+            <small>*Fecha Obligatoria</small>
+          </div>
+        </div>
+        <div class="text-center">
+          <button *ngIf="!showModificar" type="submit" class="btn btn-success w-50" (click)="addPasaje()"
+            [disabled]="!pasajeForm.form.valid"><i class="fas fa-save"></i> Registrar</button>
+
+
+          <button *ngIf="showModificar" type="submit" class="btn btn-info mx-5 w-25" (click)="modificarPasaje()"
+            [disabled]="!pasajeForm.form.valid"><i class="fas fa-edit"></i> Modificar</button>
+
+          <button *ngIf="showModificar" type="submit" class="btn btn-danger mx-5 w-25"
+            (click)="cancelarModificar()"><i class="fas fa-times-circle"></i> Cancelar</button>
+        </div>
+      </form>
+    </div>
+    
+    <!--------------------------------------------------------------LISTADO DE PASAJES-------------------------------------------------------->
+    
+    
+    <div *ngIf="!showTables" class="mt-5 col-md-12">
+      <p class="display-4 text-white text-center">Listado de Pasajes</p>
+      <table class="table table-sm text-white text-center">
+        <thead>
+          <tr>
+            <th scope="col">DNI</th>
+            <th scope="col">Precio</th>
+            <th scope="col">Categoria</th>
+            <th scope="col">Fecha Pasaje</th>
+            <th colspan="3" scope="col">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let pasaje of listaPasajes">
+            <td>{{pasaje.dniPasajero}}</td>
+            <td>{{pasaje.precioPasaje | currency:'USD':true:'1.1-2'}}</td>
+            <td>{{pasaje.categoriaPasajero}}</td>
+            <td>{{pasaje.fechaPasaje | date: 'dd/MM/yyyy'}}</td>
+            <td><button class="btn btn-success" (click)="expandirTabla(pasaje)"><i class="fas fa-expand"></i></button></td>
+            <td><button class="btn btn-danger" (click)="eliminarPasaje(pasaje)"><i class="fas fa-trash-alt"></i></button></td>
+            <td><button class="btn btn-info" (click)="mostrarModificar(pasaje)"><i class="fas fa-edit"></i></button></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
-    <!-- Validacion -->
-    <div *ngIf="precioV.invalid && (precioV.dirty || precioV.touched)" class="alert alert-danger col-md-12">
-      <div *ngIf="precioV.errors.required">
-        <small>*Precio Obligatorio</small>
+    
+    <!---------------------------------------------------------------------PASAJE UNICO------------------------------------------------------->
+    
+    
+    <div *ngIf="showTables" class="my-5 col-md-12 bg-oscuro-2 border-radius">
+      <h2 class="mt-4 mb-3 text-white text-center">Informacion de Pasaje</h2>
+      <table class="table table-sm text-white text-center">
+        <thead>
+          <tr>
+            <th scope="col">DNI</th>
+            <th scope="col">Precio</th>
+            <th scope="col">Precio descuento</th>
+            <th scope="col">Categoria</th>
+            <th scope="col">Fecha Pasaje</th>
+            <th scope="col">Fecha Compra</th>
+            <th scope="col">Monto a Pagar</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{pasaje.dniPasajero}}</td>
+            <td>{{pasaje.precioPasaje | currency:'USD':true:'1.1-2'}}</td>
+            <td>{{pasaje.precioPasajeDescuento | currency:'USD':true:'1.1-2'}}</td>
+            <td>{{pasaje.categoriaPasajero}}</td>
+            <td>{{pasaje.fechaPasaje | date: 'dd/MM/yyyy'}}</td>
+            <td>{{pasaje.fechaCompra | date: 'dd/MM/yyyy'}}</td>
+            <td>{{pasaje.montoAPagar | currency:'USD':true:'1.1-2'}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="col-md-6 offset-md-3 bg-oscuro-1 p-4 border-radius">
+        <form class="text-white" #formAdelanto="ngForm">
+          <h5 class="text-white">Agregar Adelanto</h5>
+          <div class="form-group">
+            <label for="cobrador">Cobrador</label>
+            <input type="text" name="cobrador" id="cobrador" placeholder="Ingrese cobrador" class="form-control" required
+              #cobradorV="ngModel" [(ngModel)]="adelanto.cobrador" (change)="validarAdelanto()">
+          </div>
+          <!-- Validacion -->
+          <div *ngIf="cobradorV.invalid && (cobradorV.dirty || cobradorV.touched)" class="alert alert-danger">
+            <div *ngIf="cobradorV.errors.required">
+              <small>*Cobrador Obligatorio</small>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="monto">Monto a pagar</label>
+            <input type="number" name="monto" id="monto" placeholder="Ingrese monto del adelanto" class="form-control"
+              aria-describedby="montoHelp" required #montoV="ngModel" [(ngModel)]="adelanto.montoAdelanto"
+              (change)="validarAdelanto()">
+            <small id="montoHelp" class="form-text text-muted">El monto maximo a pagar es de: {{pasaje.montoAPagar}}
+              $</small>
+          </div>
+          <!-- Validacion -->
+          <div *ngIf="montoV.invalid && (montoV.dirty || montoV.touched)" class="alert alert-danger">
+            <div *ngIf="montoV.errors.required">
+              <small>*Monto Obligatorio</small>
+            </div>
+          </div>
+          <div class="form-group text-center">
+            <button class="btn btn-success mx-5" (click)="addAdelanto()" [disabled]="validarMonto"><i class="fas fa-plus"></i> Agregar</button>
+          </div>
+        </form>
+      </div>
+
+      <h4 class="mt-5 mb-3 text-white text-center">Listado de Adelantos</h4>
+      <table class="table table-sm text-white text-center">
+        <thead>
+          <tr>
+            <th scope="col">Cobrador</th>
+            <th scope="col">Monto Pagado</th>
+            <th scope="col">Fecha de pago</th>
+            <th colspan="2" scope="col">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let cuota of pasaje.adelantos, index as i">
+            <td>{{cuota.cobrador}}</td>
+            <td>${{cuota.montoAdelanto}}</td>
+            <td>{{cuota.fecha | date: 'dd/MM/yyyy'}}</td>
+            <td><button class="btn btn-danger" (click)="eliminarAdelanto(cuota,i)"><i class="fas fa-trash-alt"></i> Eliminar</button></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="text-center">
+      <a class="my-5 btn btn-info btn-lg w-25 text-white" (click)="cerrarTabla()"><i class="fas fa-sign-out-alt"></i> Salir</a>
       </div>
     </div>
-
-    <div class="form-group col-md-12" *ngIf="mostrar">
-      <label for="precioTotal">Precio total con descuento de {{descuento}}</label>
-      <input type="text" class="form-control" id="precioTotal" name="precioTotal" disabled
-        [(ngModel)]="pasaje.precioPasajeDescuento">
-
-    </div>
-    <div class="form-group col-md-6">
-      <label for="dni">DNI Pasajero</label>
-      <input type="number" class="form-control" id="dni" name="dni" aria-describedby="dniHelp"
-        [(ngModel)]="pasaje.dniPasajero" required #dniV="ngModel">
-      <small id="dniHelp" class="form-text text-muted">Ingrese DNI del pasajero</small>
-    </div>
-
-    <div class="form-group col-md-6">
-      <label for="calendario">Categoria</label>
-      <select id="calendario" name="calendario" class="form-control" aria-describedby="categoriaHelp"
-        [(ngModel)]="pasaje.categoriaPasajero" (change)="calcular()" required #categoriaV="ngModel">
-        <option value="A">A</option>
-        <option value="M">M</option>
-        <option value="J">J</option>
-      </select>
-      <small id="categoriaHelp" class="form-text text-muted">Ingrese la categoria del pasajero</small>
-    </div>
-
-     <!-- Validacion -->
-     <div *ngIf="dniV.invalid && (dniV.dirty || dniV.touched)" class="alert alert-danger col-md-6">
-      <div *ngIf="dniV.errors.required">
-        <small>*DNI Obligatorio</small>
-      </div>
-    </div>
-
-    <!-- Validacion -->
-    <div [hidden]="categoriaV.valid || categoriaV.pristine" class="alert alert-danger col-md-6">
-      *Categoria Obligatorio.
-    </div>
   </div>
-
-  <div class="form-group">
-    <label for="fechaCompra">Fecha del Pasaje</label>
-    <input type="date" class="form-control" id="fechaCompra" name="fechaCompra" [(ngModel)]="pasaje.fechaPasaje" required #fechaV="ngModel">
-  </div>
-
-  <!-- Validacion -->
-  <div *ngIf="fechaV.invalid && (fechaV.dirty || fechaV.touched)" class="alert alert-danger">
-    <div *ngIf="fechaV.errors.required">
-      <small>*Fecha Obligatoria</small>
-    </div>
-  </div>
-  <button type="submit" class="btn btn-success" (click)="registrar()" [disabled]="!pasajeForm.form.valid"><i class="fas fa-save"></i>  Registrar pasaje</button>
-</form>
-
-<table class="table container mt-5 text-center bg-oscuro-2 text-white" [mfData]="listaPasajes" #mf="mfDataTable" [mfRowsOnPage]="5">
-  <thead>
-    <tr>
-      <th scope="col">
-        <mfDefaultSorter by="id">Id</mfDefaultSorter>
-      </th>
-      <th scope="col">
-        <mfDefaultSorter by="dniPasajero">DNI Pasajero</mfDefaultSorter>
-      </th>
-      <th scope="col">
-        <mfDefaultSorter by="precioPasaje">Precio sin descuento</mfDefaultSorter>
-      </th>
-      <th scope="col">
-        <mfDefaultSorter by="precioPasajeDescuento">Precio con descuento</mfDefaultSorter>
-      </th>
-      <th scope="col">
-        <mfDefaultSorter by="categoriaPasajero">Categoria del pasajero</mfDefaultSorter>
-      </th>
-      <th scope="col">
-        <mfDefaultSorter by="fechaCompra">Fecha de compra</mfDefaultSorter>
-      </th>
-      <th scope="col">
-        <mfDefaultSorter by="fechaPasaje">Fecha del pasaje</mfDefaultSorter>
-      </th>
-      <th scope="col" colspan="2">
-        Acciones
-      </th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let p of mf.data">
-      <th scope="row">{{p.id}}</th>
-      <td>{{p.dniPasajero}}</td>
-      <td>{{p.precioPasaje | currency:'USD':true:'1.1-2'}}</td>
-      <td>{{p.precioPasajeDescuento | currency:'USD':true:'1.1-2'}}</td>
-      <td>{{p.categoriaPasajero}}</td>
-      <td>{{p.fechaCompra | date: 'dd/MM/yyyy'}}</td>
-      <td>{{p.fechaPasaje | date: 'dd/MM/yyyy'}}</td>
-      <td><button class="btn btn-danger" (click)="eliminarPasaje(p)"><i class="fas fa-trash-alt"></i></button></td>
-      <td><button class="btn btn-info" (click)="modificarPasaje(p)"><i class="fas fa-edit"></i></button></td>
-    </tr>
-  </tbody>
-</table>
+</div>
